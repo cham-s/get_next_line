@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:25 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/19 17:03:14 by cattouma         ###   ########.fr       */
+/*   Updated: 2015/12/19 17:21:11 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int		read_file(char *filename)
 		{
 			buf[ret] = '\0';
 			lines = ft_strsplit(buf, '\n');
-			ft_lstadd(&list, ft_lstnew((void *)buf, ft_strlen(buf)));
+			ft_lstadd(&list, ft_lstnew((void *)lines[1], ft_strlen(lines[1])));
 			ft_putstr((char const*)list->content);
 		}
 	}
