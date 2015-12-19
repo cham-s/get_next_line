@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:25 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/19 14:22:10 by cattouma         ###   ########.fr       */
+/*   Updated: 2015/12/19 16:44:11 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,27 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-int		read_file(char *filename);
+int		read_file(char *filename)
 {
 	int		ret;
 	int		fd;
-	char	buf[BUF_SIZE];
+	char	buf[BUFF_SIZE + 1];
+	char	**lines;
 
 	fd = open(filename, O_RDONLY);
 	if (fd > -1)
 	{
-		while ((ret = read(fd, buf, BUF_SIZE)))
+		while ((ret = read(fd, buf, BUFF_SIZE)))
 		{
-			
+			buf[ret] = '\0';
+			lines = ft_strsplit(buf, '\n');
+			ft_putstr(lines[0]);
 		}
 	}
+	return (1);
 }
-int		get_next_line(int const fd, char **line)
+
+/*int		get_next_line(int const fd, char **line)
 {
 
-}
+}*/
