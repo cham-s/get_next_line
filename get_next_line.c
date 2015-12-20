@@ -17,30 +17,33 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-int		read_file(char *filename)
+int		line_read(int const fd, char **line)
 {
 	int		ret;
-	int		fd;
 	char	buf[BUFF_SIZE + 1];
-	char	**lines;
 	t_list	*list;
 
 	list = NULL;
-	fd = open(filename, O_RDONLY);
 	if (fd > -1)
 	{
 		while ((ret = read(fd, buf, BUFF_SIZE)))
 		{
+			*line = buf;
 			buf[ret] = '\0';
-			lines = ft_strsplit(buf, '\n');
-			ft_lstadd(&list, ft_lstnew((void *)lines[1], ft_strlen(lines[1])));
-			ft_putstr((char const*)list->content);
+			ft_lstappend(&list, ft_lstnew((void *)buf, BUFF_SIZE));
 		}
 	}
+	ft_lstprint(list);
+	ft_memdel((void *)list);
 	return (1);
 }
 
-/*int		get_next_line(int const fd, char **line)
+int		get_next_line(int const fd, char **line)
 {
-
-}*/
+	if (line_read(fd, line))
+		return (1);
+	//if (read_finished())
+	//	return (0);
+	else
+		return (-1);
+}

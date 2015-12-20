@@ -11,11 +11,29 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
+#include "libft/libft.h"
+#include <sys/types.h>
+#include <fcntl.h>
+#include <sys/uio.h>
+#include <unistd.h>
 
 int		main(int ac, char **av)
 {
-	ac--;
-	read_file(av[1]);
+	if (ac < 2)
+		ft_putendl("error");
+	else
+	{
+		int fd;
+		char *line;
+		line = NULL;
+		fd = open(av[1], O_RDONLY);
+		if (get_next_line(fd, &line) == 1)
+		{
+			ft_putendl("");
+			char *read = ft_strjoin("Hello", "les amis");;
+			ft_putendl(read);
+			free(read);
+		}
+	}
 	return(0);
 }
