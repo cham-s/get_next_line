@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 14:01:22 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/19 16:35:04 by cattouma         ###   ########.fr       */
+/*   Updated: 2015/12/21 09:16:38 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,7 @@ int		main(int ac, char **av)
 		line = NULL;
 		fd = open(av[1], O_RDONLY);
 		if (get_next_line(fd, &line) == 1)
-		{
-			ft_putendl("");
-			char *read = ft_strjoin("Hello", "les amis");;
-			ft_putendl(read);
-			free(read);
-		}
+			ft_putstr(line);
 	}
 	return(0);
 }
