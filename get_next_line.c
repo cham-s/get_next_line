@@ -17,7 +17,7 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-static char *readfd(int const fd)
+static char		*readfd(int const fd)
 {
 	int		ret;
 	char	buf[BUFF_SIZE + 1];
@@ -29,68 +29,70 @@ static char *readfd(int const fd)
 	{
 		buf[ret] = '\0';
 		tmp = readbuf;
-		readbuf = ft_strjoin(fp->buffer, buf);
+		readbuf = ft_strjoin(readbuf, buf);
 		ft_strdel(&tmp);
 	}
 	if (!readbuf)
 		return (NULL);
-	return (readbuf)
+	return (readbuf);
 }
 
 static t_file	*filenew(fd)
 {
-	t_file *fp;
-	size_t len;
+	t_file	*fp;
+	size_t	len;
+	char	*rbuf;
 
-	len = ft_strlen(bufcontent);
+	rbuf = readfd(fd);
+	len = ft_strlen(rbuf);
 	fp = (t_file *)ft_memalloc(sizeof(t_file));
 	if (!fp)
 		return (NULL);
-	if (!bufcontent)
+	if (!rbuf)
 		fp->buffer = NULL;
 	else
 	{
 		fp->buffer = (char *)ft_memalloc(sizeof(len));
-		(void)ft_memcpy(fp->buffer, bufcontent, len);
+		(void)ft_memcpy(fp->buffer, rbuf, len);
 	}
 	fp->bsize = BUFF_SIZE;
 	fp->fd = fd;
 	fp->tmp = NULL;
 	fp->next = NULL;
+	return (fp);
 }
 
-static void	retline(t_file *fp, char **line)
+static char		*retline(t_file *fp)
 {
-	char *t;
-	size_t len;
+	char	*t;
+	size_t	len;
+	char	*line;
 
 	len = 0;
 	t = NULL;
-	*line = ft_strdup("");
+	ft_putchar(*(fp->buffer));
 	while (!(t = ft_memchr(fp->buffer, '\n', fp->bsize)))
 	{
-		fp->tmp = *line;
-		*line = ft_strnjoin(*line, fp->buffer, fp->bsize);
+		fp->tmp = line;
+		line = ft_strnjoin(line, fp->buffer, fp->bsize);
 		fp->buffer += fp->bsize;
 		ft_strdel(&fp->tmp);
 	}
 	len = t - fp->buffer;
-	*line = ft_strnjoin(*line, fp->buffer, len);
+	line = ft_strnjoin(line, fp->buffer, len);
 	fp->buffer += len;
 	(fp->buffer)++;
+	return (line);
 }
 
 
 int		get_next_line(int const fd, char **line)
 {
-	static t_file *fp;
+	static t_file *fp = NULL;;
 
-	fp = (t_file *)ft_memalloc(sizeof(t_file));
+	fp = filenew(fd);
 	if (!fp)
 		return (-1);
-	fp->fd = 0;
-	if (fd == -1)
-		return (-1);
-	readfd(fd, fp, line);
+	*line = retline(fp);
 	return(1);
 }

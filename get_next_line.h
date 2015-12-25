@@ -20,6 +20,7 @@ typedef struct			s_file
 	int					fd;
 	char				*tmp;
 	char				*buffer;
+	struct t_file		*next;
 }						t_file;
 
 int		get_next_line(int const fd, char **line);
