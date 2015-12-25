@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:36 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/24 09:45:28 by cattouma         ###   ########.fr       */
+/*   Updated: 2015/12/25 17:24:11 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,8 @@ typedef struct			s_file
 {
 	short				bsize;
 	int					fd;
-	char				*curp;
 	char				*tmp;
 	char				*buffer;
-	char				*line;
 }						t_file;
 
 int		get_next_line(int const fd, char **line);
