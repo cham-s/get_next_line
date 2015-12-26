@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:36 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/25 17:24:11 by cattouma         ###   ########.fr       */
+/*   Updated: 2015/12/26 10:49:59 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 typedef struct			s_file
 {
-	short				bsize;
 	int					fd;
 	char				*tmp;
 	char				*buffer;
