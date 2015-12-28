@@ -17,113 +17,126 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-static char		*readfd(int const fd)
+static t_file	*fpnodenew(int fd)
 {
-	int		ret;
-	char	buf[BUFF_SIZE + 1];
-	char 	*readbuf;
-	char 	*tmp;
+	t_file *new;
 
-	readbuf = ft_strdup("");
-	while ((ret = read(fd, buf, BUFF_SIZE)))
-	{
-		buf[ret] = '\0';
-		tmp = readbuf;
-		readbuf = ft_strjoin(readbuf, buf);
-		ft_strdel(&tmp);
-	}
-	if (!readbuf)
-		return (NULL);
-	return (readbuf);
+	new = (t_file *)ft_memalloc(sizeof(t_file));
+	if (!new)
+			return (NULL);
+	new->fd = fd;
+	new->buffer = NULL;
+	new->left = NULL;
+	new->right = NULL;
+	return (new);
 }
 
-static t_file	*filenew(fd)
+static t_file	*fpintree(t_file **btree, int fd)
 {
-	t_file	*fp;
-	size_t	len;
-	char	*rbuf;
+	t_file *tmp;
+	tmp = *btree;
 
-	rbuf = readfd(fd);
-	len = ft_strlen(rbuf);
-	fp = (t_file *)ft_memalloc(sizeof(t_file));
-	if (!fp)
-		return (NULL);
-	if (!rbuf)
-		fp->buffer = NULL;
+	while (tmp)
+	{
+		if (fd == tmp->fd)
+			return (tmp);
+		if (fd > tmp->fd)
+			tmp = tmp->right;
+		else
+			tmp = tmp->left;
+	}
+	return (NULL);
+}
+
+static void	addnode(t_file **btree, t_file *new)
+{
+	t_file *tmptree;
+	t_file *tmpnode;
+
+	tmptree = *btree;
+	if (!*btree)
+		*btree = new;
 	else
 	{
-		fp->buffer = (char *)ft_memalloc(sizeof(len));
-		(void)ft_memcpy(fp->buffer, rbuf, len);
+		while(tmptree)
+		{
+			tmpnode = tmptree;
+			if (new->fd > tmptree->fd)
+			{
+				tmptree = tmptree->right;
+				if (!tmptree)
+					tmpnode->right = new;
+			}
+			else
+			{
+				tmptree = tmptree->left;
+				if (!tmptree)
+					tmpnode->left = new;
+			}
+		}
 	}
-	fp->fd = fd;
-	fp->tmp = NULL;
-	fp->next = NULL;
-	return (fp);
 }
 
-static int		retline(t_file *fp, char **line)
+static int				getline(char **fpbuffer, char **line, int fd)
 {
-	char	*t;
-	char	*z;
-	size_t	len;
+	int ret;
+	int len;
+	char buf[BUFF_SIZE + 1];
 
-	ft_putstr("char start in ascii: ");
-	ft_putnbr(*(fp->buffer));
-	ft_putendl("");
-	if (!*(fp->buffer))
+	while (!(ft_strchr(fpbuffer, '\n')) && ret)
 	{
-		*line = NULL;
+		if ((ret = read(fd, buf, BUFF_SIZE)) < 0)
+			return (ret);
+		buf[ret] = '\0';
+		fpbuffer = ft_strjoin(fpbuffer, buf);
+	}
+	while (fpbuffer[len] && fpbuffer[len] != '\n')
+		len++;
+	*line = ft_strndup(fpbuffer, len);
+	fpbuffer += len;
+	if (*(fpbuffer) == '\n')
+		(fpbuffer)++;
+	if (!ret)
 		return (0);
-	}
-	len = 0;
-	*line = ft_strdup("");
-	t = ft_memchr(fp->buffer, '\n', ft_strlen(fp->buffer));
-	z = ft_memchr(fp->buffer, '\0', ft_strlen(fp->buffer));
-	ft_putstr("at checking: ");
-	ft_putnbr(*t);
-	ft_putendl("");
-	if (!z)
-	{
-		ft_putstr("at checking: ");
-		ft_putnbr(0);
-		ft_putendl("");
-	}
-	if(z)
-		ft_putendl("true");
-	if ((z && !t))
-	{
-		ft_putstr("char stop: ");
-		ft_putchar(*z);
-		ft_putendl("Z");
-		len = z - fp->buffer;
-	}
-	if ((z && t) || (!z && t))
-	{
-		ft_putstr("char stop: ");
-		ft_putchar(*t);
-		ft_putendl("T");
-		len = t - fp->buffer;
-	}
-	ft_putstr("Len: ");
-	ft_putnbr(len);
-	ft_putendl("");
-	fp->tmp = *line;
-	*line = ft_strnjoin(*line, fp->buffer, len);
-	fp->buffer += len;
-	ft_strdel(&fp->tmp);
-	if(t)
-		(fp->buffer)++;
-
 	return (1);
 }
 
 int				get_next_line(int const fd, char **line)
 {
-	static t_file *fplist = NULL;
+	int				ret;
+	char			buf[BUFF_SIZE + 1];
+	int 			len = 0;
+	static t_file	*btree = NULL;
+	t_file			*fpnode;
 
-	if (!fplist)
-		fplist = filenew(fd);
-	if (!fplist)
+	ret = BUFF_SIZE;
+	if (fd < 0 || !line)
 		return (-1);
-	return (retline(fplist, line));
+	else
+	{
+		if (!(fpnode = fpintree(&btree, fd)))
+			fpnode = fpnodenew(fd);
+			addnode(&btree, fpnode);
+		}
+		if (!(fpnode->buffer))
+			fpnode->buffer = ft_strdup("");
+		while (!(ft_strchr(fpnode->buffer, '\n')) && ret)
+		{
+			if ((ret = read(fd, buf, BUFF_SIZE)) < 0)
+				return (ret);
+			buf[ret] = '\0';
+			fpnode->buffer = ft_strjoin(fpnode->buffer, buf);
+		}
+		while (fpnode->buffer[len] && fpnode->buffer[len] != '\n')
+			len++;
+		*line = ft_strndup(fpnode->buffer, len);
+		fpnode->buffer += len;
+		if (*(fpnode->buffer) == '\n')
+			(fpnode->buffer)++;
+		if (!ret)
+			return (0);
+		return (1);
+	}
 }
+
+
