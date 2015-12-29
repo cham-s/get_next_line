@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:25 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/29 16:29:02 by cattouma         ###   ########.fr       */
+/*   Updated: 2015/12/29 18:53:11 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static t_file	*fpnodenew(int fd)
 
 	new = (t_file *)ft_memalloc(sizeof(t_file));
 	if (!new)
-			return (NULL);
+		return (NULL);
 	new->fd = fd;
 	new->buffer = NULL;
 	new->left = NULL;
@@ -34,8 +34,8 @@ static t_file	*fpnodenew(int fd)
 static t_file	*fpintree(t_file **btree, int fd)
 {
 	t_file			*tmp;
-	tmp = *btree;
 
+	tmp = *btree;
 	while (tmp)
 	{
 		if (fd == tmp->fd)
@@ -58,7 +58,7 @@ static void		addnode(t_file **btree, t_file *new)
 		*btree = new;
 	else
 	{
-		while(tmptree)
+		while (tmptree)
 		{
 			tmpnode = tmptree;
 			if (new->fd > tmptree->fd)
