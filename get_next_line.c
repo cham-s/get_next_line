@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:25 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/26 17:15:21 by cattouma         ###   ########.fr       */
+/*   Updated: 2015/12/29 12:56:14 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 static t_file	*fpnodenew(int fd)
 {
-	t_file *new;
+	t_file			*new;
 
 	new = (t_file *)ft_memalloc(sizeof(t_file));
 	if (!new)
@@ -33,7 +33,7 @@ static t_file	*fpnodenew(int fd)
 
 static t_file	*fpintree(t_file **btree, int fd)
 {
-	t_file *tmp;
+	t_file			*tmp;
 	tmp = *btree;
 
 	while (tmp)
@@ -48,10 +48,10 @@ static t_file	*fpintree(t_file **btree, int fd)
 	return (NULL);
 }
 
-static void	addnode(t_file **btree, t_file *new)
+static void		addnode(t_file **btree, t_file *new)
 {
-	t_file *tmptree;
-	t_file *tmpnode;
+	t_file			*tmptree;
+	t_file			*tmpnode;
 
 	tmptree = *btree;
 	if (!*btree)
@@ -77,25 +77,27 @@ static void	addnode(t_file **btree, t_file *new)
 	}
 }
 
-static int				getline(char **fpbuffer, char **line, int fd)
+static int		getline(t_file *fpnode, char **line, int fd)
 {
-	int ret;
-	int len;
-	char buf[BUFF_SIZE + 1];
+	int				ret;
+	int				len;
+	char			buf[BUFF_SIZE + 1];
 
-	while (!(ft_strchr(fpbuffer, '\n')) && ret)
+	len = 0;
+	ret = BUFF_SIZE;
+	while (!(ft_strchr(fpnode->buffer, '\n')) && ret)
 	{
 		if ((ret = read(fd, buf, BUFF_SIZE)) < 0)
 			return (ret);
 		buf[ret] = '\0';
-		fpbuffer = ft_strjoin(fpbuffer, buf);
+		fpnode->buffer = ft_strjoin(fpnode->buffer, buf);
 	}
-	while (fpbuffer[len] && fpbuffer[len] != '\n')
+	while (fpnode->buffer[len] && fpnode->buffer[len] != '\n')
 		len++;
-	*line = ft_strndup(fpbuffer, len);
-	fpbuffer += len;
-	if (*(fpbuffer) == '\n')
-		(fpbuffer)++;
+	*line = ft_strndup(fpnode->buffer, len);
+	fpnode->buffer += len;
+	if (*(fpnode->buffer) == '\n')
+		(fpnode->buffer)++;
 	if (!ret)
 		return (0);
 	return (1);
@@ -103,40 +105,20 @@ static int				getline(char **fpbuffer, char **line, int fd)
 
 int				get_next_line(int const fd, char **line)
 {
-	int				ret;
-	char			buf[BUFF_SIZE + 1];
-	int 			len = 0;
 	static t_file	*btree = NULL;
 	t_file			*fpnode;
 
-	ret = BUFF_SIZE;
 	if (fd < 0 || !line)
 		return (-1);
 	else
 	{
 		if (!(fpnode = fpintree(&btree, fd)))
+		{
 			fpnode = fpnodenew(fd);
 			addnode(&btree, fpnode);
 		}
 		if (!(fpnode->buffer))
 			fpnode->buffer = ft_strdup("");
-		while (!(ft_strchr(fpnode->buffer, '\n')) && ret)
-		{
-			if ((ret = read(fd, buf, BUFF_SIZE)) < 0)
-				return (ret);
-			buf[ret] = '\0';
-			fpnode->buffer = ft_strjoin(fpnode->buffer, buf);
-		}
-		while (fpnode->buffer[len] && fpnode->buffer[len] != '\n')
-			len++;
-		*line = ft_strndup(fpnode->buffer, len);
-		fpnode->buffer += len;
-		if (*(fpnode->buffer) == '\n')
-			(fpnode->buffer)++;
-		if (!ret)
-			return (0);
-		return (1);
+		return (getline(fpnode, line, fd));
 	}
 }
-
-
