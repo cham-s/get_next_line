@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:25 by cattouma          #+#    #+#             */
-/*   Updated: 2016/01/25 18:34:57 by cattouma         ###   ########.fr       */
+/*   Updated: 2016/01/25 19:01:32 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ static int		getline(t_file *fpnode, char **line, int fd)
 	char			*tmp;
 
 	len = 0;
-	ret = -2;
+	ret = BUFF_SIZE;
 	while (!(ft_strchr(fpnode->buffer, '\n')) && ret)
 	{
 		if ((ret = read(fd, buf, BUFF_SIZE)) < 0)
@@ -100,7 +100,7 @@ static int		getline(t_file *fpnode, char **line, int fd)
 		len++;
 	tmp = fpnode->buffer;
 	fpnode->buffer = ft_strdup(fpnode->buffer + len);
-	free(tmp);
+	ft_strdel(&tmp);
 	if (ret == 0 && *line[0] == '\0')
 		return (0);
 	return (1);
