@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cattouma <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/16 14:01:22 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/29 16:37:56 by cattouma         ###   ########.fr       */
+/*   Created: 2016/01/25 18:44:56 by cattouma          #+#    #+#             */
+/*   Updated: 2016/01/25 18:45:05 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,33 +19,20 @@
 
 int		main(int ac, char **av)
 {
-	if (0)
-		ft_putendl("error");
+	int fd;
+	int res;
+	char *line;
+
+	if (ac == 1)
+		fd = 0;
 	else
+		fd = open(av[1], O_RDONLY);
+	while ((res = get_next_line(fd , &line)))
 	{
-		//int fd;
-		//int fd2;
-		char *line;
-		line = NULL;
-		int res;
-		int i;
-		i = 0;
-		//fd = open(av[1], O_RDONLY);
-		//fd2 = open(av[2], O_RDONLY);
-		int fd = 0;
-		if ((res = get_next_line(fd , &line)) == 1)
-			ft_putendl(line);
-		/*if ((res = get_next_line(fd2 , &line)) == 1)
-			ft_putendl(line);
-		if ((res = get_next_line(fd , &line)) == 1)
-			ft_putendl(line);
-		if ((res = get_next_line(fd2 , &line)) == 1)
-			ft_putendl(line);
-		if ((res = get_next_line(fd2 , &line)) == 1)
-			ft_putendl(line);
-		if ((res = get_next_line(fd2 , &line)) == 1)
-			ft_putendl(line);
-			*/
+		ft_putstr("-> ");
+		ft_putendl(line);
 	}
+	ft_putnbr(res);
+	ft_putendl("");
 	return(0);
 }

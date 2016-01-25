@@ -6,13 +6,13 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:36 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/29 18:51:41 by cattouma         ###   ########.fr       */
+/*   Updated: 2016/01/25 18:39:37 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 1024
+# define BUFF_SIZE 6
 
 typedef struct		s_file
 {

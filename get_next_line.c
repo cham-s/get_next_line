@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:25 by cattouma          #+#    #+#             */
-/*   Updated: 2015/12/29 18:53:11 by cattouma         ###   ########.fr       */
+/*   Updated: 2016/01/25 18:34:57 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,23 +82,26 @@ static int		getline(t_file *fpnode, char **line, int fd)
 	int				ret;
 	int				len;
 	char			buf[BUFF_SIZE + 1];
+	char			*tmp;
 
 	len = 0;
-	ret = BUFF_SIZE;
+	ret = -2;
 	while (!(ft_strchr(fpnode->buffer, '\n')) && ret)
 	{
 		if ((ret = read(fd, buf, BUFF_SIZE)) < 0)
 			return (ret);
 		buf[ret] = '\0';
-		fpnode->buffer = ft_strjoin(fpnode->buffer, buf);
+		fpnode->buffer = ft_strjoinfree(fpnode->buffer, buf);
 	}
 	while (fpnode->buffer[len] && fpnode->buffer[len] != '\n')
 		len++;
-	*line = ft_strndup(fpnode->buffer, len);
-	fpnode->buffer += len;
-	if (*(fpnode->buffer) == '\n')
-		(fpnode->buffer)++;
-	if (!ret)
+	*line = ft_strsub(fpnode->buffer, 0, len);
+	if (fpnode->buffer[len] == '\n')
+		len++;
+	tmp = fpnode->buffer;
+	fpnode->buffer = ft_strdup(fpnode->buffer + len);
+	free(tmp);
+	if (ret == 0 && *line[0] == '\0')
 		return (0);
 	return (1);
 }
@@ -108,9 +111,7 @@ int				get_next_line(int const fd, char **line)
 	static t_file	*btree = NULL;
 	t_file			*fpnode;
 	int				res;
-	char			*tmp;
 
-	tmp = NULL;
 	if (fd < 0 || !line)
 		return (-1);
 	else
@@ -123,7 +124,6 @@ int				get_next_line(int const fd, char **line)
 		if (!(fpnode->buffer))
 		{
 			fpnode->buffer = ft_strdup("");
-			tmp = fpnode->buffer;
 		}
 		res = getline(fpnode, line, fd);
 		return (res);

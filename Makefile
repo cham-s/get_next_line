@@ -6,7 +6,7 @@
 #    By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/16 14:22:25 by cattouma          #+#    #+#              #
-#    Updated: 2015/12/19 15:59:30 by cattouma         ###   ########.fr        #
+#    Updated: 2016/01/25 14:51:46 by cattouma         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,10 +18,12 @@ FlAG = -Wall -Werror -Wextra
 all: $(NAME)
 
 $(NAME):
+	make -C libft/
 	gcc $(FLAG) -o $(NAME) $(SRCS) $(LIBS)
 clean:
 	rm -f $(NAME)
 
 fclean: clean
+	make fclean -C libft
 
 re: fclean all
