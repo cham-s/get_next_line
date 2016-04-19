@@ -6,7 +6,7 @@
 /*   By: cattouma <cattouma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/16 13:59:25 by cattouma          #+#    #+#             */
-/*   Updated: 2016/01/25 19:01:32 by cattouma         ###   ########.fr       */
+/*   Updated: 2016/04/19 16:25:23 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,10 @@ static void		addnode(t_file **btree, t_file *new)
 	}
 }
 
-static int		getline(t_file *fpnode, char **line, int fd)
+static int		getline(t_file *fpnode, char **line, int fd, char *buf)
 {
 	int				ret;
 	int				len;
-	char			buf[BUFF_SIZE + 1];
 	char			*tmp;
 
 	len = 0;
@@ -110,8 +109,9 @@ int				get_next_line(int const fd, char **line)
 {
 	static t_file	*btree = NULL;
 	t_file			*fpnode;
-	int				res;
+	char			*buf;
 
+	buf = ft_strnew(BUFF_SIZE);
 	if (fd < 0 || !line)
 		return (-1);
 	else
@@ -125,7 +125,6 @@ int				get_next_line(int const fd, char **line)
 		{
 			fpnode->buffer = ft_strdup("");
 		}
-		res = getline(fpnode, line, fd);
-		return (res);
+		return (getline(fpnode, line, fd, buf));
 	}
 }

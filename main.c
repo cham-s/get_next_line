@@ -6,7 +6,7 @@
 /*   By: cattouma <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/25 18:44:56 by cattouma          #+#    #+#             */
-/*   Updated: 2016/01/25 19:03:51 by cattouma         ###   ########.fr       */
+/*   Updated: 2016/04/19 16:30:33 by cattouma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,10 @@ int		main(int ac, char **av)
 	{
 		ft_putstr("-> ");
 		ft_putendl(line);
+		free(line);
 	}
 	ft_putnbr(res);
 	ft_putendl("");
+	while(1);
 	return (0);
 }
