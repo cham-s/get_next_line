@@ -110,6 +110,7 @@ int				get_next_line(int const fd, char **line)
 	static t_file	*btree = NULL;
 	t_file			*fpnode;
 	char			*buf;
+	int				res;
 
 	buf = ft_strnew(BUFF_SIZE);
 	if (fd < 0 || !line)
@@ -125,6 +126,8 @@ int				get_next_line(int const fd, char **line)
 		{
 			fpnode->buffer = ft_strdup("");
 		}
-		return (getline(fpnode, line, fd, buf));
+		res = (getline(fpnode, line, fd, buf));
+		free(buf);
+		return (res);
 	}
 }
